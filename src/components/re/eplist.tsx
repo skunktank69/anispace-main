@@ -4,6 +4,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { Dot } from "lucide-react";
 
 interface Episode {
   number: number;
@@ -22,11 +23,14 @@ export default function Episodes(props: { animeId: string; per_page: number }) {
   const [error, setError] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [sortAsc, setSortAsc] = useState(true);
-  const [session, setSession] = useState("");
-  // const { per_page } = useRouter();
+  const [jumpValue, setJumpValue] = useState("");
+  const [highlightEp, setHighlightEp] = useState<number | null>(null);
+
+  const episodeRefs = useRef<Record<number, HTMLDivElement | null>>({});
 
   const EPISODES_PER_PAGE = props.per_page;
   const animeId = props.animeId;
+
   useEffect(() => {
     async function fetchEpisodes() {
       try {
@@ -36,7 +40,6 @@ export default function Episodes(props: { animeId: string; per_page: number }) {
 
         const data: EpisodesResponse = await res.json();
         setEpisodes(data.ep_list);
-        setSession(data.session_id);
       } catch (err: any) {
         setError(err.message || "Something went wrong");
       } finally {
@@ -52,6 +55,7 @@ export default function Episodes(props: { animeId: string; per_page: number }) {
   );
 
   const totalPages = Math.ceil(sortedEpisodes.length / EPISODES_PER_PAGE);
+
   const paginatedEpisodes = sortedEpisodes.slice(
     (currentPage - 1) * EPISODES_PER_PAGE,
     currentPage * EPISODES_PER_PAGE,
@@ -60,27 +64,73 @@ export default function Episodes(props: { animeId: string; per_page: number }) {
   const handlePageChange = (page: number) => {
     if (page < 1 || page > totalPages) return;
     setCurrentPage(page);
-    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  const jumpToEpisode = () => {
+    const epNum = Number(jumpValue);
+    if (!epNum || epNum < 1) return;
+
+    const index = sortedEpisodes.findIndex((ep) => ep.number === epNum);
+    if (index === -1) return;
+
+    const page = Math.floor(index / EPISODES_PER_PAGE) + 1;
+    setCurrentPage(page);
+    setHighlightEp(epNum);
+
+    // wait for pagination render, then scroll
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        episodeRefs.current[epNum]?.scrollIntoView({
+          behavior: "smooth",
+          block: "center",
+        });
+      });
+    });
+
+    // auto-clear highlight
+    setTimeout(() => setHighlightEp(null), 2000);
   };
 
   if (loading) return <>Loading episodes...</>;
   if (error) return <p className="text-red-600">{error}</p>;
 
   return (
-    <div className="flex flex-col gap-2">
-      {/* Sort Toggle */}
-      <div className="flex justify-end mb-2">
+    <div className="flex flex-col gap-3">
+      {/* Controls */}
+      <div className="flex flex-wrap items-center justify-between gap-2">
         <button
+          type="button"
           onClick={() => setSortAsc(!sortAsc)}
           className="px-3 py-1 border rounded-md hover:bg-secondary-foreground transition"
         >
           Sort: {sortAsc ? "Asc" : "Desc"}
         </button>
+
+        <div className="flex items-center gap-2">
+          <input
+            type="number"
+            min={1}
+            placeholder="Episode #"
+            value={jumpValue}
+            onChange={(e) => setJumpValue(e.target.value)}
+            onKeyDown={(e) => e.key === "Enter" && jumpToEpisode()}
+            className="w-28 px-2 py-1 border rounded-md bg-background"
+          />
+          <button
+            type="button"
+            onClick={jumpToEpisode}
+            className="px-3 py-1 border rounded-md hover:bg-foreground/40"
+          >
+            Go
+          </button>
+        </div>
       </div>
+
       {/* Pagination */}
       {totalPages > 1 && (
-        <div className="flex justify-center gap-2 mt-4 flex-wrap">
+        <div className="flex justify-center gap-2 mt-2 flex-wrap">
           <button
+            type="button"
             onClick={() => handlePageChange(currentPage - 1)}
             disabled={currentPage === 1}
             className="px-3 py-1 border rounded-md disabled:opacity-50"
@@ -91,6 +141,7 @@ export default function Episodes(props: { animeId: string; per_page: number }) {
           {Array.from({ length: totalPages }, (_, i) => i + 1).map(
             (pageNum) => (
               <button
+                type="button"
                 key={pageNum}
                 onClick={() => handlePageChange(pageNum)}
                 className={`px-3 py-1 border rounded-md ${
@@ -105,6 +156,7 @@ export default function Episodes(props: { animeId: string; per_page: number }) {
           )}
 
           <button
+            type="button"
             onClick={() => handlePageChange(currentPage + 1)}
             disabled={currentPage === totalPages}
             className="px-3 py-1 border rounded-md disabled:opacity-50"
@@ -113,27 +165,40 @@ export default function Episodes(props: { animeId: string; per_page: number }) {
           </button>
         </div>
       )}
+
       {/* Episode Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
         {paginatedEpisodes.map((ep) => (
-          <Link
+          <div
             key={ep.number}
-            className="relative group rounded-lg overflow-hidden shadow-md cursor-pointer transition-transform"
-            href={`/anime/${animeId}/watch/${ep.id.split(`/`).join("luffy-of")}`}
+            ref={(el) => {
+              episodeRefs.current[ep.number] = el;
+            }}
+            className={`rounded-lg transition ring-offset-2 ${
+              highlightEp === ep.number ? "ring-2 ring-primary" : ""
+            }`}
           >
-            <div className="relative w-full aspect-[16/9]">
-              <Image
-                src={ep.image}
-                alt={`Episode ${ep.number}`}
-                fill
-                className="object-cover"
-              />
-            </div>
-            <div className="absolute bottom-2 right-2 bg-black/60 text-white text-xs font-semibold px-1 py-0.5 rounded">
-              {ep.duration}
-            </div>
-            <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-30 transition-opacity rounded-lg"></div>
-          </Link>
+            <Link
+              href={`/anime/${animeId}/watch/${ep.id.split("/").join("luffy-of")}`}
+              scroll={false}
+              className="relative group block rounded-lg overflow-hidden shadow-md"
+            >
+              <div className="relative w-full aspect-[16/9]">
+                <Image
+                  src={ep.image}
+                  alt={`Episode ${ep.number}`}
+                  fill
+                  className="object-cover"
+                />
+              </div>
+
+              <div className="absolute bottom-2 right-2 bg-black/60 text-white text-xs font-semibold px-1 py-0.5 rounded">
+                ep {ep.number} · {ep.duration}
+              </div>
+
+              <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-30 transition-opacity" />
+            </Link>
+          </div>
         ))}
       </div>
     </div>
