@@ -144,6 +144,7 @@ export type RecentItemScalarFieldEnum = (typeof RecentItemScalarFieldEnum)[keyof
 
 export const PostScalarFieldEnum = {
   id: 'id',
+  title: 'title',
   content: 'content',
   userId: 'userId',
   createdAt: 'createdAt',

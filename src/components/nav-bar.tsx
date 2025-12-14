@@ -17,10 +17,12 @@ import {
 
 import AuthModal from "./auth-modal";
 import { ModeToggle } from "./theme/mode-toggle";
+import { useRouter } from "next/navigation";
 
 export default function Navbar() {
   const [user, setUser] = useState(null);
   const [authOpen, setAuthOpen] = useState(false);
+  const router = useRouter();
 
   async function fetchMe() {
     try {
@@ -38,13 +40,37 @@ export default function Navbar() {
   }, []);
 
   async function handleLogout() {
-    await fetch("/api/auth/login", { method: "POST" });
+    await fetch("/api/auth/me", { method: "POST" });
     setUser(null);
     window.location.reload();
   }
 
+  async function goToRandomAnime() {
+    const res = await fetch("/api/anime/random");
+    if (!res.ok) return;
+
+    const { id } = await res.json();
+    if (!id) return;
+
+    router.push(`/anime/${id}`);
+  }
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 0);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
   return (
-    <header className="w-full border-b bg-background/60 backdrop-blur supports-backdrop-filter:bg-background/40">
+    <header
+      className={`sticky top-0 z-50 w-full bg-background/60 backdrop-blur supports-backdrop-filter:bg-background/40 transition-shadow duration-200 ${
+        scrolled ? "border-b border-border shadow-sm" : "border-b-0 shadow-none"
+      }`}
+    >
       <div className="mx-auto flex h-16 max-w-screen-2xl items-center justify-between px-4">
         {/* Left: Logo */}
         <Link href="/" className="flex items-center gap-2 font-bold text-xl">
@@ -71,7 +97,7 @@ export default function Navbar() {
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <DropdownMenuItem asChild>
-                <Link href="/random/anime">Anime</Link>
+                <a onClick={goToRandomAnime}>Anime</a>
               </DropdownMenuItem>
               <DropdownMenuItem asChild>
                 <Link href="/random/manga">Manga</Link>

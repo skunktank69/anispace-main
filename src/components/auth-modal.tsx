@@ -9,6 +9,8 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { showAlert } from "./error-base";
+import { useRouter } from "next/navigation";
 
 type AuthModalProps = {
   open: boolean;
@@ -21,6 +23,7 @@ export default function AuthModal({
   open,
   onOpenChangeAction,
 }: AuthModalProps) {
+  const router = useRouter();
   const [mode, setMode] = useState<AuthMode>("login");
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -56,7 +59,8 @@ export default function AuthModal({
       const data = await res.json();
 
       if (!res.ok) {
-        alert(data.error ?? "Authentication failed");
+        showAlert(data.error ?? "Authentication failed");
+        router.refresh();
         return;
       }
 
@@ -69,6 +73,8 @@ export default function AuthModal({
       });
     } finally {
       setLoading(false);
+      // router.refresh();
+      // window.location.reload();
     }
   }
 

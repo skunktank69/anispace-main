@@ -11,7 +11,7 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
 } from "@/components/ui/dropdown-menu";
-import { MoreVertical, Play } from "lucide-react";
+import { MoreVertical, Play, Star } from "lucide-react";
 import { Skeleton } from "./ui/skeleton";
 
 /*eslint-disable */
@@ -137,12 +137,29 @@ export default function Card({ anime }: any) {
 
             {/* Q-tip Label */}
             {hover && (
-              <div
-                className="absolute bottom-1 left-1 backdrop-blur-md px-2 py-1 text-xs font-semibold rounded bg-black/50"
-                style={{ color: anime.color }}
-              >
-                {anime.type}
-              </div>
+              <>
+                <div
+                  className="absolute bottom-1 left-1 backdrop-blur-md px-2 py-1 text-xs font-semibold rounded bg-black/50"
+                  style={{ color: anime.color }}
+                >
+                  {anime.type}
+                </div>
+                <div
+                  className="absolute bottom-1 right-1 backdrop-blur-md px-2 py-1 text-xs font-semibold rounded bg-black/50"
+                  style={{ color: anime.color }}
+                >
+                  {anime.releaseDate && anime.releaseDate
+                    ? anime.releaseDate
+                    : "null"}
+                </div>
+                <div
+                  className="absolute top-1 left-1 backdrop-blur-xs px-2 py-1 text-xs font-semibold rounded flex items-center-safe gap-0"
+                  // style={{ color: anime.color }}
+                >
+                  {anime.rating && anime.rating / 10}
+                  <Star height={12} fill={anime.color} stroke={anime.color} />
+                </div>
+              </>
             )}
           </div>
         </div>
@@ -155,7 +172,7 @@ export default function Card({ anime }: any) {
           )}
         >
           <div
-            className="font-medium truncate"
+            className="font-black truncate pl-2"
             style={{ color: hover ? anime.color : "var(--title-color)" }}
           >
             {displayTitle.length > 35
@@ -166,9 +183,9 @@ export default function Card({ anime }: any) {
 
         {/* Metadata */}
         <div className="flex items-center px-1 gap-3 text-xs text-neutral-400 overflow-hidden whitespace-nowrap mt-0.5">
-          {anime.releaseDate && <span>{anime.releaseDate}</span>}
+          {/*{anime.releaseDate && <span>{anime.releaseDate}</span>}
           {anime.episodes && <span>{anime.episodes} eps</span>}
-          {anime.rating && <span>{anime.rating / 10}★</span>}
+          {anime.rating && <span>{anime.rating / 10}★</span>}*/}
         </div>
       </div>
     </Link>
