@@ -78,7 +78,7 @@ export default function Navbar() {
         </Link>
 
         {/* Right */}
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-1 md:gap-4">
           <Button variant="ghost" size="sm" className="flex items-center gap-1">
             <Link href={"/search"}>
               <Search className="h-4 w-4" />
