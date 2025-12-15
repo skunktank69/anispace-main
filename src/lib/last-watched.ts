@@ -21,6 +21,7 @@ export function updateLastWatched({
   epNo,
   watchedTill,
   duration,
+  poster,
 }: {
   animeId: string;
   epSession: string;
@@ -28,6 +29,7 @@ export function updateLastWatched({
   epNo: number;
   watchedTill: number;
   duration?: number;
+  poster: string;
 }) {
   const store = getLastWatched();
 
@@ -45,44 +47,8 @@ export function updateLastWatched({
     epNo,
     watchedTill,
     duration,
+    poster: poster || "",
   };
 
   saveLastWatched(store);
-}
-
-export function buildRecentItemsFromLocal() {
-  if (typeof window === "undefined") return [];
-
-  let store: any = {};
-  try {
-    store = JSON.parse(localStorage.getItem("last-watched-anime") || "{}");
-  } catch {
-    return [];
-  }
-
-  const items: any[] = [];
-
-  for (const animeId of Object.keys(store)) {
-    const anime = store[animeId];
-    if (!anime?.episodes) continue;
-
-    for (const epSession of Object.keys(anime.episodes)) {
-      const ep = anime.episodes[epSession];
-
-      items.push({
-        provider: "animepahe",
-        providerId: animeId, // 🔑 stable ID
-        title: ep.epTitle,
-        onEpisode: ep.epNo,
-        timestamps: JSON.stringify({
-          watchedTill: ep.watchedTill,
-          duration: ep.duration,
-        }),
-        type: "anime",
-        color: "#ffffff",
-      });
-    }
-  }
-
-  return items;
 }

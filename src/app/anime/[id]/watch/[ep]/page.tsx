@@ -9,11 +9,15 @@ export default function WatchPage(req) {
   const { id, ep } = useParams();
   const [data, setData] = useState<any>(null);
   const [episodes, setEpisodes] = useState<any>(null);
+  const [image, setImage] = useState<any>(null);
 
   const [currentSource, setCurrentSource] = useState<string>("");
   const url = typeof window !== "undefined" ? window.location.origin : null;
   // console.log(url);
   useEffect(() => {
+    fetch(`${process.env.NEXT_PUBLIC_META_API}/info/${id}`)
+      .then((r) => r.json())
+      .then((d) => setImage(d));
     fetch(
       `https://consumet-woad-beta.vercel.app/anime/animepahe/info/${ep.split("luffy-of")[0]}`,
     )
@@ -55,7 +59,7 @@ export default function WatchPage(req) {
       className=" flex flex-col xl:flex-row gap-6 p-6 max-w-[16000px] mx-auto"
     >
       <div className="w-full xl:w-[70%] shrink-0">
-        <Player data={data} id={id} />
+        <Player data={data} id={id} image={image} />
       </div>
 
       <div className="w-full min-w-[280px] p-2 bg-sidebar rounded">

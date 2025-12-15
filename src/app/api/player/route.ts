@@ -76,6 +76,22 @@ const episodeSlug = "${episodeSlug}";
 const nextBtn = document.querySelector(".next-btn");
 
 let epList = [];
+let resumeTime = null;
+let hasSeeked = false;
+
+try {
+  const store = JSON.parse(localStorage.getItem("last-watched-anime") || "{}");
+  const anime = Object.values(store).find(a => a?.episodes?.[episodeSlug]);
+  const epData = anime?.episodes?.[episodeSlug];
+
+  if (epData && typeof epData.watchedTill === "number") {
+    if (!epData.duration || epData.watchedTill < epData.duration - 10) {
+      if (epData.watchedTill > 5) {
+        resumeTime = epData.watchedTill;
+      }
+    }
+  }
+} catch {}
 
 async function loadEpisodes() {
   try {
@@ -85,9 +101,7 @@ async function loadEpisodes() {
     );
     const json = await res.json();
     epList = json.episodes || [];
-  } catch (e) {
-    console.error("Failed to load episode list", e);
-  }
+  } catch {}
 }
 
 loadEpisodes();
@@ -127,6 +141,19 @@ const art = new Artplayer({
 
 let lastSent = 0;
 let firedNext = false;
+
+art.on("video:loadedmetadata", () => {
+  window.parent.postMessage({
+    type: "player-ready",
+    duration: art.duration,
+    durationText: formatTime(art.duration),
+  }, "*");
+
+  if (resumeTime != null && !hasSeeked) {
+    art.seek = resumeTime;
+    hasSeeked = true;
+  }
+});
 
 art.on("video:timeupdate", () => {
   const now = Date.now();
@@ -169,20 +196,6 @@ nextBtn.onclick = () => {
     episode: next.number,
   }, "*");
 };
-
-window.addEventListener("message", e => {
-  if (e.data?.type === "seek") {
-    art.seek = e.data.time;
-  }
-});
-
-art.on("video:loadedmetadata", () => {
-  window.parent.postMessage({
-    type: "player-ready",
-    duration: art.duration,
-    durationText: formatTime(art.duration),
-  }, "*");
-});
 </script>
 </body>
 </html>`;

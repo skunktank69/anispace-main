@@ -8,7 +8,15 @@ import { updateLastWatched, getLastWatched } from "@/lib/last-watched";
 
 const AUTOPLAY_KEY = "anime-autoplay-enabled";
 
-export default function AnimePlayer({ data, id }: { data: any; id: number }) {
+export default function AnimePlayer({
+  data,
+  id,
+  image,
+}: {
+  data: any;
+  id: number;
+  image: string;
+}) {
   const iframeRef = useRef<HTMLIFrameElement | null>(null);
   const router = useRouter();
   const params = useParams();
@@ -125,7 +133,9 @@ export default function AnimePlayer({ data, id }: { data: any; id: number }) {
           duration: e.data.duration,
           currentTimeText: e.data.currentTimeText,
           durationText: e.data.durationText,
+          poster: image.cover || "",
         });
+        console.log(image.cover);
         return;
       }
 
@@ -156,15 +166,8 @@ export default function AnimePlayer({ data, id }: { data: any; id: number }) {
         />
       </div>
 
-      <div className="flex justify-between text-sm bg-foreground/30 p-4 rounded-lg">
-        <div className="flex gap-3 items-center">
-          <span>Episode {data.episode}</span>
-          <span className="opacity-70">
-            {currentTimeText} / {durationText}
-          </span>
-        </div>
-
-        <div className="flex items-center gap-3">
+      <div className=" text-sm bg-foreground/30 p-2 rounded-lg">
+        <div className="flex items-center justify-between">
           <label className="flex items-center gap-1 text-xs">
             <input
               type="checkbox"

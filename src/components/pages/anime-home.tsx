@@ -7,7 +7,7 @@ import TopAiring from "../re/top-airing-side";
 import { CardGrid } from "../card-grid";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { Button } from "../ui/button";
-import ContinueWatching from "@/components/re/recently-watched"; // <-- import the new component
+import ContinueWatching from "@/components/re/recently-watched";
 
 interface Anime {
   id: string;
@@ -28,6 +28,17 @@ export default function AnimeHomePage() {
   const [popularPage, setPopularPage] = useState(1);
   const [loadingPopular, setLoadingPopular] = useState(false);
 
+  const [showContinue, setShowContinue] = useState(false);
+
+  useEffect(() => {
+    try {
+      const data = localStorage.getItem("last-watched-anime");
+      setShowContinue(!!data && data !== "{}");
+    } catch {
+      setShowContinue(false);
+    }
+  }, []);
+
   const truncate = (txt: string, len: number) =>
     txt.length > len ? txt.slice(0, len).trim() + "…" : txt;
 
@@ -41,7 +52,7 @@ export default function AnimeHomePage() {
         setData(data);
 
         setSlides(
-          data.trending.results.map((a, i) => ({
+          data.trending.results.map((a) => ({
             id: a.id,
             title: truncate(a.title.romaji, 50),
             description: truncate(a.description ?? "", 150),
@@ -88,17 +99,21 @@ export default function AnimeHomePage() {
 
   return (
     <div>
+      {/* HERO */}
       <Slider slides={slides} type={tp.anime} />
-
+      {/* CONTINUE WATCHING — contextual rail */}
+      <>
+        {showContinue && (
+          <section className="px-2 mt-12 lg:px-15">
+            <ContinueWatching />
+          </section>
+        )}
+      </>
+      {/* MAIN GRID */}
       <div className="grid lg:grid-cols-[2fr_auto] gap-4 pt-12 px-2 lg:px-4 lg:pl-15">
         {/* Left column */}
         <div className="space-y-12">
-          {/* Continue Watching */}
-          <section>
-            <ContinueWatching />
-          </section>
-
-          {/* Trending Anime */}
+          {/* Trending */}
           <section>
             <div className="py-2 font-black text-3xl rounded-xl my-4 mx-2 pr-4 flex items-center justify-between">
               <div className="flex items-center">
@@ -113,7 +128,7 @@ export default function AnimeHomePage() {
             />
           </section>
 
-          {/* Popular Anime */}
+          {/* Popular */}
           <section>
             <div className="py-2 font-black text-3xl rounded-xl my-4 mx-2 pr-4 flex items-center justify-between">
               <div className="flex items-center">

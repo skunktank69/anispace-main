@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
-import { Shuffle, Search } from "lucide-react";
+import { Shuffle, Search, BookOpen } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
@@ -82,6 +82,11 @@ export default function Navbar() {
           <Button variant="ghost" size="sm" className="flex items-center gap-1">
             <Link href={"/search"}>
               <Search className="h-4 w-4" />
+            </Link>
+          </Button>
+          <Button variant="ghost" size="sm" className="flex items-center gap-1">
+            <Link href={"https://xotaku.skunktank.me/manga"}>
+              <BookOpen className="h-4 w-4" />
             </Link>
           </Button>
           {/* Pick Random */}
