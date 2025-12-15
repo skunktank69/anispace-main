@@ -65,8 +65,10 @@ model RecentItem {
   userId      Int
   type        String
   createdAt   DateTime @default(now())
-  UpdatedAt   DateTime @default(now())
+  UpdatedAt   DateTime @updatedAt
   color       String
+
+  @@unique([userId, providerId, type])
 }
 
 //

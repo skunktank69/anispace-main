@@ -84,7 +84,7 @@ export function Slider({ slides, types }: { slides: Slide[]; types: tp }) {
 
                 {/* Bottom fade */}
                 <div className="absolute inset-0 bg-linear-to-b from-background via-background/10 to-transparent" />
-                <div className="absolute inset-0 bg-linear-to-t from-background via-background/70 to-transparent" />
+                <div className="absolute inset-0 bg-linear-to-t from-background via-background/50 to-transparent" />
 
                 {/* Content */}
                 {i === current && (
@@ -118,8 +118,12 @@ export function Slider({ slides, types }: { slides: Slide[]; types: tp }) {
                       {/* RIGHT: Actions */}
                       <div className="hidden md:flex items-center gap-3 shrink-0 mb-[2%]">
                         <Link href={`/${type}/${s.id}`}>
-                          <button className="inline-flex items-center gap-2 px-5 py-3 rounded-lg bg-foreground text-background font-semibold hover:bg-foreground/60 transition inset-0 ">
-                            <PlayCircle stroke={"var(--background)"} />
+                          <button
+                            className="inline-flex items-center gap-2 px-5 py-3 rounded-lg transform ease-out hover:opacity-50 text-background font-semibold hover:bg-foreground/60 transition inset-0 opacity-40 "
+                            style={{
+                              background: s.dominantColors.gradient,
+                            }}
+                          >
                             Watch Now
                           </button>
                         </Link>
@@ -129,8 +133,13 @@ export function Slider({ slides, types }: { slides: Slide[]; types: tp }) {
                     {/* Mobile actions (stacked below text) */}
                     <div className="mt-4 flex gap-3 md:hidden">
                       <Link href={`/${type}/${s.id}`} className="flex-1">
-                        <button className="w-full py-3 rounded-lg bg-foreground text-background font-semibold">
-                          <PlayCircle stroke={"var(--background)"} />
+                        <button
+                          className="w-full py-1 rounded-lg  transform ease-out opacity-40 hover:opacity-40 text-background font-semibold backdrop-blur-3xl border"
+                          style={{
+                            background: s.dominantColors.gradient,
+                          }}
+                        >
+                          {/*<PlayCircle stroke={"var(--background)"} />*/}
                           Watch Now
                         </button>
                       </Link>

@@ -42,7 +42,7 @@ export default function AiringBanner({ nextAiringEpisode }: any) {
   });
 
   return (
-    <div className="w-full bg-linear-to-r dark:bg-white/30 bg-black/30  text-white p-2 rounded-lg shadow-md backdrop-blur-md my-20">
+    <div className="w-full bg-linear-to-r dark:bg-white/30 bg-black/30  text-white p-2 rounded-lg shadow-md backdrop-blur-md">
       <h2 className="text-lg font-bold">
         Episode {episode} airs in {formatCountdown(remaining)}
       </h2>

@@ -15,6 +15,11 @@ export default function WatchPage(req) {
   // console.log(url);
   useEffect(() => {
     fetch(
+      `https://consumet-woad-beta.vercel.app/anime/animepahe/info/${ep.split("luffy-of")[0]}`,
+    )
+      .then((r) => r.json())
+      .then((d) => setEpisodes(d.episodes));
+    fetch(
       `${`${url}` || `http://localhost:3000`}/api/watch/${id}/${encodeURIComponent(ep.split("luffy-of").join("%2F"))}`,
     )
       .then((r) => r.json())
@@ -26,16 +31,12 @@ export default function WatchPage(req) {
           setCurrentSource(j.data.sources[0].url);
         }
       });
-  }, [id, ep]);
+  }, [id, ep, episodes]);
 
   // useEffect(() => {
-  //   fetch(
-  //     `https://consumet-woad-beta.vercel.app/anime/animepahe/info/${ep.split("/")[0]} `,
-  //   )
-  //     .then((r) => r.json())
-  //     .then((d) => setEpisodes(d.episodes));
+
   // }, []);
-  console.log(episodes);
+  // console.log(episodes);
 
   if (!data) return <div>Loading episode…</div>;
 
@@ -54,7 +55,7 @@ export default function WatchPage(req) {
       className=" flex flex-col xl:flex-row gap-6 p-6 max-w-[16000px] mx-auto"
     >
       <div className="w-full xl:w-[70%] shrink-0">
-        <Player data={data} />
+        <Player data={data} id={id} />
       </div>
 
       <div className="w-full min-w-[280px] p-2 bg-sidebar rounded">

@@ -1,10 +1,11 @@
 "use client";
 
+// import { useRouter } from "next/navigation";
+// import { Dot } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
-import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { Dot } from "lucide-react";
+import Image from "next/image";
+import clsx from "clsx";
 
 interface Episode {
   number: number;
@@ -167,7 +168,7 @@ export default function Episodes(props: { animeId: string; per_page: number }) {
       )}
 
       {/* Episode Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
+      <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
         {paginatedEpisodes.map((ep) => (
           <div
             key={ep.number}
@@ -205,12 +206,24 @@ export default function Episodes(props: { animeId: string; per_page: number }) {
   );
 }
 
+interface Episode {
+  id: string;
+  number: number;
+  image: string;
+}
+
+interface EpisodesResponse {
+  ep_list: Episode[];
+}
+
 export function CompactEpisodes({
   animeId,
   per_page,
+  currentEpisode,
 }: {
   animeId: string;
   per_page: number;
+  currentEpisode: number;
 }) {
   const [episodes, setEpisodes] = useState<Episode[]>([]);
   const [loading, setLoading] = useState(true);
@@ -219,7 +232,7 @@ export function CompactEpisodes({
   const [sortAsc, setSortAsc] = useState(true);
 
   const scrollRef = useRef<HTMLDivElement>(null);
-
+  const activeRef = useRef<HTMLAnchorElement>(null);
   useEffect(() => {
     async function fetchEpisodes() {
       try {
@@ -235,7 +248,7 @@ export function CompactEpisodes({
       }
     }
 
-    if (animeId) fetchEpisodes();
+    fetchEpisodes();
   }, [animeId]);
 
   const sortedEpisodes = useMemo(() => {
@@ -251,17 +264,33 @@ export function CompactEpisodes({
     return sortedEpisodes.slice(start, start + per_page);
   }, [sortedEpisodes, currentPage, per_page]);
 
+  useEffect(() => {
+    if (!episodes.length) return;
+
+    const index = sortedEpisodes.findIndex((e) => e.number === currentEpisode);
+    if (index === -1) return;
+
+    const page = Math.floor(index / per_page) + 1;
+    setCurrentPage(page);
+
+    requestAnimationFrame(() => {
+      activeRef.current?.scrollIntoView({
+        block: "center",
+        behavior: "smooth",
+      });
+    });
+  }, [episodes, sortedEpisodes, currentEpisode, per_page]);
+
   function handlePageChange(page: number) {
     if (page < 1 || page > totalPages) return;
     setCurrentPage(page);
 
-    // Scroll episode list to top, not the whole page
     requestAnimationFrame(() => {
       scrollRef.current?.scrollTo({ top: 0, behavior: "smooth" });
     });
   }
 
-  if (loading) return <>Loading…</>;
+  if (loading) return <p className="text-sm opacity-70">Loading episodes…</p>;
   if (error) return <p className="text-red-600">{error}</p>;
 
   return (
@@ -270,44 +299,69 @@ export function CompactEpisodes({
       <div className="flex justify-end">
         <button
           onClick={() => setSortAsc((v) => !v)}
-          className="px-2 py-0.5 text-[11px] lg:text-xs border rounded"
+          className="px-2 py-0.5 text-[11px] border rounded"
         >
           {sortAsc ? "↑ Asc" : "↓ Desc"}
         </button>
       </div>
+
+      {/* Episodes */}
       <div
         ref={scrollRef}
-        className="max-h-[60vh] lg:max-h-[100vh] xl:max-h-[78vh] overflow-y-auto pr-1"
+        className="max-h-[60vh] xl:max-h-[78vh] overflow-y-auto pr-1"
       >
-        <div className="grid grid-cols-4 sm:grid-cols-5 lg:grid-cols-6 xl:grid-cols-4 gap-2">
-          {paginatedEpisodes.map((ep) => (
-            <Link
-              key={ep.number}
-              href={`/anime/${animeId}/watch/${ep.id
-                .split("/")
-                .join("luffy-of")}`}
-              className="relative rounded overflow-hidden"
-            >
-              <div className="relative w-full aspect-[16/9]">
-                <Image
-                  src={ep.image}
-                  alt={`Episode ${ep.number}`}
-                  fill
-                  className="object-cover"
-                />
-              </div>
+        <div className="grid grid-cols-4 sm:grid-cols-5 xl:grid-cols-4 gap-2">
+          {paginatedEpisodes.map((ep) => {
+            const isActive = ep.number === currentEpisode;
 
-              <span className="absolute bottom-0.5 right-0.5 bg-black/70 text-white text-[10px] lg:text-xs px-1.5 rounded">
-                Ep {ep.number}
-              </span>
-            </Link>
-          ))}
+            return (
+              <Link
+                ref={isActive ? activeRef : null}
+                key={ep.number}
+                href={`/anime/${animeId}/watch/${ep.id
+                  .split("/")
+                  .join("luffy-of")}`}
+                className={clsx(
+                  "relative rounded overflow-hidden ring-2 transition",
+                  isActive
+                    ? "ring-primary scale-[1.02]"
+                    : "ring-transparent hover:ring-muted",
+                )}
+              >
+                <div className="relative w-full aspect-[16/9]">
+                  <Image
+                    src={ep.image}
+                    alt={`Episode ${ep.number}`}
+                    fill
+                    className="object-cover"
+                  />
+                </div>
+
+                <span
+                  className={clsx(
+                    "absolute bottom-0.5 right-0.5 text-[10px] px-1.5 rounded",
+                    isActive
+                      ? "bg-primary text-primary-foreground"
+                      : "bg-black/70 text-white",
+                  )}
+                >
+                  Ep {ep.number}
+                </span>
+
+                {isActive && (
+                  <span className="absolute top-0.5 left-0.5 bg-primary text-primary-foreground text-[10px] px-1.5 rounded">
+                    Playing
+                  </span>
+                )}
+              </Link>
+            );
+          })}
         </div>
       </div>
 
       {/* Pagination */}
       {totalPages > 1 && (
-        <div className="flex items-center justify-center gap-2 text-xs lg:text-sm">
+        <div className="flex items-center justify-center gap-2 text-xs">
           <button
             onClick={() => handlePageChange(currentPage - 1)}
             disabled={currentPage === 1}

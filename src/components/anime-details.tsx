@@ -114,8 +114,8 @@ export default function AnimeDetail({ id }: { id: string }) {
       </section>
 
       {/* CONTENT */}
-      <section className="relative -mt-32 px-6 md:px-12 max-w-[1600px] mx-auto">
-        <div className="flex flex-col md:flex-row gap-8 mb-12">
+      <section className="relative -mt-75 px-6 md:px-12 max-w-[1600px] mx-auto">
+        <div className="flex flex-col md:flex-row gap-8 mb-8 items-center">
           {/* Poster */}
           <div className="shrink-0">
             <Image
@@ -128,12 +128,12 @@ export default function AnimeDetail({ id }: { id: string }) {
           </div>
 
           {/* Info */}
-          <div className="flex flex-col gap-4 flex-1">
+          <div className="flex flex-col gap-4 flex-1 md:mt-20">
             <h1 className="text-3xl md:text-4xl font-bold leading-tight">
               {title}
             </h1>
 
-            <div className="flex flex-wrap gap-3">
+            <div className="flex flex-wrap gap-4">
               <Button size="lg" className="gap-2">
                 <Play size={18} />
                 Watch Now
@@ -148,24 +148,43 @@ export default function AnimeDetail({ id }: { id: string }) {
                 <Heart size={18} />
                 Add to List
               </Button>
+              {anime.nextAiringEpisode && (
+                <AiringBanner
+                  nextAiringEpisode={anime.nextAiringEpisode}
+                  className=""
+                />
+              )}
             </div>
-
-            {anime.nextAiringEpisode && (
-              <AiringBanner
-                nextAiringEpisode={anime.nextAiringEpisode}
-                className="mt-4"
-              />
-            )}
           </div>
         </div>
 
         {/* TABS */}
         <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <TabsList className=" justify-start w-full rounded p-0 ">
-            <TabsTrigger value="overview">Overview</TabsTrigger>
-            <TabsTrigger value="episodes">Episodes</TabsTrigger>
-            <TabsTrigger value="characters">Characters</TabsTrigger>
-            <TabsTrigger value="relations">Relations</TabsTrigger>
+          <TabsList className=" justify-start w-full rounded p-0">
+            <TabsTrigger
+              value="overview"
+              className=" text-[10px] font-semibold md:font-medium md:text-md"
+            >
+              Overview
+            </TabsTrigger>
+            <TabsTrigger
+              value="episodes"
+              className=" text-[10px] font-semibold md:font-medium md:text-md"
+            >
+              Episodes
+            </TabsTrigger>
+            <TabsTrigger
+              value="characters"
+              className=" text-[10px] font-semibold md:font-medium md:text-md"
+            >
+              Characters
+            </TabsTrigger>
+            <TabsTrigger
+              value="relations"
+              className=" text-[10px] font-semibold md:font-medium md:text-md"
+            >
+              Relations
+            </TabsTrigger>
           </TabsList>
 
           <TabsContent value={activeTab} className="mt-8">

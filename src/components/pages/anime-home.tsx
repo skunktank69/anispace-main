@@ -5,9 +5,9 @@ import { Slider, tp } from "../re/slider";
 import { Skeleton } from "../ui/skeleton";
 import TopAiring from "../re/top-airing-side";
 import { CardGrid } from "../card-grid";
-import { Arrow } from "@radix-ui/react-dropdown-menu";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { Button } from "../ui/button";
+import ContinueWatching from "@/components/re/recently-watched"; // <-- import the new component
 
 interface Anime {
   id: string;
@@ -27,15 +27,6 @@ export default function AnimeHomePage() {
   const [data, setData] = useState<any[]>([]);
   const [popularPage, setPopularPage] = useState(1);
   const [loadingPopular, setLoadingPopular] = useState(false);
-
-  const getThemeGradient = (i: number) => {
-    const gradients = [
-      "linear-gradient(135deg, #667eea, #764ba2)",
-      "linear-gradient(135deg, #f093fb, #f5576c)",
-      "linear-gradient(135deg, #4facfe, #00f2fe)",
-    ];
-    return gradients[i % gradients.length];
-  };
 
   const truncate = (txt: string, len: number) =>
     txt.length > len ? txt.slice(0, len).trim() + "…" : txt;
@@ -89,8 +80,6 @@ export default function AnimeHomePage() {
       <Skeleton className="relative w-full md:h-[20vh] min-h-[600px] h-[30vh] aspect-video sm:h-[50vh] max-h-[1200px] flex items-center justify-center lg:rounded-lg overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-r from-background via-background/20 to-transparent" />
         <div className="absolute inset-0 bg-gradient-to-r from-transparent via-background/20 to-background" />
-
-        {/* Bottom fade */}
         <div className="absolute inset-0 bg-gradient-to-t from-background via-background/50 to-transparent" />
         <div className="animate-spin w-12 h-12 border-4 border-white/20 border-t-foreground rounded-full" />
       </Skeleton>
@@ -104,7 +93,12 @@ export default function AnimeHomePage() {
       <div className="grid lg:grid-cols-[2fr_auto] gap-4 pt-12 px-2 lg:px-4 lg:pl-15">
         {/* Left column */}
         <div className="space-y-12">
-          {/* Ongoing Anime */}
+          {/* Continue Watching */}
+          <section>
+            <ContinueWatching />
+          </section>
+
+          {/* Trending Anime */}
           <section>
             <div className="py-2 font-black text-3xl rounded-xl my-4 mx-2 pr-4 flex items-center justify-between">
               <div className="flex items-center">

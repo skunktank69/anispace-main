@@ -15,9 +15,9 @@ export async function GET(
       next: { revalidate: 300 },
     },
   );
-  console.log(
-    `https://aph-alpha.vercel.app/api/play/${id[0]}?episodeId=${id[1]}`,
-  );
+  // console.log(
+  //   `https://aph-alpha.vercel.app/api/play/${id[0]}?episodeId=${id[1]}`,
+  // );
   if (!res.ok) {
     return NextResponse.json(
       { error: "Failed to fetch episode data" },

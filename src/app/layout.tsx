@@ -37,7 +37,7 @@ export default function RootLayout({
           <Navbar />
           {children}
         </ThemeProvider>
-        <footer className="flex flex-col md:flex-row gap-3 items-center justify-around w-full py-4 text-sm bg-slate-800 text-white/70 mt-50">
+        <footer className="flex flex-col md:flex-row gap-3 items-center justify-around w-full py-4 text-sm bg-background text-foreground/60 mt-50 bottom-0  -z-100">
           <p>
             Copyright © {new Date().getFullYear()} Skunktank69. All rights
             reservered.
