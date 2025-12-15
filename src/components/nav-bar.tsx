@@ -81,12 +81,12 @@ export default function Navbar() {
         <div className="flex items-center gap-1 md:gap-4">
           <Button variant="ghost" size="sm" className="flex items-center gap-1">
             <Link href={"/search"}>
-              <Search className="h-4 w-4" />
+              <Search className="h-2 w-2 md:h-4 md:w-4" />
             </Link>
           </Button>
           <Button variant="ghost" size="sm" className="flex items-center gap-1">
             <Link href={"https://xotaku.skunktank.me/manga"}>
-              <BookOpen className="h-4 w-4" />
+              <BookOpen className="h-2 w-2 md:h-4 md:w-4" />
             </Link>
           </Button>
           {/* Pick Random */}
@@ -97,7 +97,7 @@ export default function Navbar() {
                 size="sm"
                 className="flex items-center gap-1"
               >
-                <Shuffle className="h-4 w-4" />
+                <Shuffle className="h-2 w-2 md:h-4 md:w-4" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
