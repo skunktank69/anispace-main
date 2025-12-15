@@ -43,7 +43,7 @@ export default function ContinueWatching() {
     setEpisodes(list);
   }, []);
 
-  if (!episodes.length) return <div>No recent anime</div>;
+  if (!episodes.length) return <div></div>;
 
   return (
     <div className="space-y-3">
