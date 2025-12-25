@@ -9,28 +9,8 @@ export async function GET(
   const { id } = await context.params;
 
   try {
-    const mapRes = await fetch(
-      `https://anilist-to-animepahe-delta.vercel.app/api/${id}`,
-      {
-        next: { revalidate: 24 * 60 * 60 },
-      },
-    );
-
-    if (!mapRes.ok) {
-      return NextResponse.json({ error: "Mapping failed" }, { status: 502 });
-    }
-
-    const map = await mapRes.json();
-    const first = map?.episodes?.[0];
-
-    if (!first?.id) {
-      return NextResponse.json({ error: "No episodes" }, { status: 404 });
-    }
-
-    const session_id = first.id.slice(0, first.id.indexOf("/"));
-
     const infoRes = await fetch(
-      `https://consumet-woad-beta.vercel.app/anime/animepahe/info/${session_id}`,
+      `${process.env.NEXT_PUBLIC_MAPPER_API_ALT}/api/${id}`,
       {
         next: { revalidate: 15 * 60 },
       },
@@ -47,8 +27,10 @@ export async function GET(
 
     return NextResponse.json(
       {
-        id,
-        session_id,
+        id: info.aniListId,
+        session_id: info.session,
+        internal_id: info.animePaheId, //not exactly animepahe id,
+        title: info.title,
         ep_list: info.episodes ?? [],
       },
       {
