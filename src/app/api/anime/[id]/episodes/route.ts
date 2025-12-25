@@ -11,9 +11,9 @@ export async function GET(
   try {
     const infoRes = await fetch(
       `${process.env.NEXT_PUBLIC_MAPPER_API_ALT}/api/${id}`,
-      {
-        next: { revalidate: 15 * 60 },
-      },
+      // {
+      //   next: { revalidate: 15 * 60 }, dont cache maybe?
+      // },
     );
 
     if (!infoRes.ok) {
@@ -34,9 +34,9 @@ export async function GET(
         ep_list: info.episodes ?? [],
       },
       {
-        headers: {
-          "Cache-Control": "public, max-age=900",
-        },
+        // headers: {
+        //   "Cache-Control": "public, max-age=900",
+        // },
       },
     );
   } catch {
