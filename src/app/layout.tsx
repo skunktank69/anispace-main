@@ -27,6 +27,15 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  
+
+fetch('https://getfullyear.com/api/year')
+  .then(response => response.json())
+  .then(data => {
+    footerYear.textContent = data.year;
+  });
+
+
   return (
     <html lang="en" suppressHydrationWarning>
       <body
@@ -39,7 +48,7 @@ export default function RootLayout({
         </ThemeProvider>
         <footer className="flex flex-col md:flex-row gap-3 items-center justify-around w-full py-4 text-sm bg-background text-foreground/60 mt-50 bottom-0  -z-100">
           <p>
-            Copyright © {new Date().getFullYear()} Skunktank69. All rights
+            Copyright © {footerYear.textContext} Skunktank69. All rights
             reservered.
           </p>
 
