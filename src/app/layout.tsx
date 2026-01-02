@@ -1,11 +1,10 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-// import { ThemeProvider } from "@/components/theme/theme-provider";
 import Navbar from "@/components/nav-bar";
 import { ThemeProvider } from "next-themes";
 import { Analytics } from "@vercel/analytics/next";
-import { Github, GithubIcon } from "lucide-react";
+import { Github } from "lucide-react";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -24,17 +23,10 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
-  
-
-fetch('https://getfullyear.com/api/year')
-  .then(response => response.json())
-  .then(data => {
-    footerYear.textContent = data.year;
-  });
-
+}) {
+  const year = new Date().getFullYear();
 
   return (
     <html lang="en" suppressHydrationWarning>
@@ -42,20 +34,22 @@ fetch('https://getfullyear.com/api/year')
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <Analytics />
-        <ThemeProvider>
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <Navbar />
           {children}
         </ThemeProvider>
-        <footer className="flex flex-col md:flex-row gap-3 items-center justify-around w-full py-4 text-sm bg-background text-foreground/60 mt-50 bottom-0  -z-100">
+
+        <footer className="flex flex-col md:flex-row gap-3 items-center justify-around w-full py-4 text-sm bg-background text-foreground/60">
           <p>
-            Copyright © {footerYear.textContext} Skunktank69. All rights
-            reservered.
+            Copyright © {year} Skunktank69. All rights reserved.
           </p>
 
           <div className="flex items-center gap-4">
             <a
               href="https://github.com/skunktank69"
-              className="hover:text-white transition-all"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-white transition-colors"
             >
               <Github />
             </a>
