@@ -74,7 +74,8 @@ export default function AnimePlayer({
   const [currentSource, setCurrentSource] = useState(defaultSource);
 
   const iframeSrc = `/api/player?video=${encodeURIComponent(
-    currentSource.url,
+    "https://cinderbyte-hls.anispace.workers.dev/proxy?url=" +
+      currentSource.url,
   )}&ep=${data.episode}&slug=${params.ep}`;
 
   /* ---------------- Navigation ---------------- */

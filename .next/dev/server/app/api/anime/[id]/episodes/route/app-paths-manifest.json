@@ -1,0 +1,3 @@
+{
+  "/api/anime/[id]/episodes/route": "app-edge-has-no-entrypoint"
+}

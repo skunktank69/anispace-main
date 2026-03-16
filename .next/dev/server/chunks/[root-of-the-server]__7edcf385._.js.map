@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": [],
+  "sections": [
+    {"offset": {"line": 274, "column": 0}, "map": {"version":3,"sources":["file:///C:/Users/admin/Documents/GitHub/anispace/src/lib/anime-conf.ts"],"sourcesContent":["import { ANIME, MANGA, META } from \"@consumet/extensions\";\r\n\r\n// const mangareader = new MANGA.MangaReader();\r\n\r\nconst anilist = new META.Anilist();\r\n\r\nexport { anilist };\r\n"],"names":[],"mappings":";;;;AAAA;;AAEA,+CAA+C;AAE/C,MAAM,UAAU,IAAI,mKAAI,CAAC,OAAO"}},
+    {"offset": {"line": 293, "column": 0}, "map": {"version":3,"sources":["file:///C:/Users/admin/Documents/GitHub/anispace/src/app/api/anime/%5Bid%5D/route.ts"],"sourcesContent":["import { anilist } from \"@/lib/anime-conf\";\r\nimport { NextResponse } from \"next/server\";\r\nexport async function GET(\r\n  req: Request,\r\n  context: { params: Promise<{ id: string }> },\r\n) {\r\n  const { id } = await context.params;\r\n  const source = await anilist.fetchAnimeInfo(id);\r\n\r\n  return NextResponse.json(source);\r\n}\r\n"],"names":[],"mappings":";;;;AAAA;AACA;;;AACO,eAAe,IACpB,GAAY,EACZ,OAA4C;IAE5C,MAAM,EAAE,EAAE,EAAE,GAAG,MAAM,QAAQ,MAAM;IACnC,MAAM,SAAS,MAAM,wIAAO,CAAC,cAAc,CAAC;IAE5C,OAAO,gJAAY,CAAC,IAAI,CAAC;AAC3B"}}]
+}

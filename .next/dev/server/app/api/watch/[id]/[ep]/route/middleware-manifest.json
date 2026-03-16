@@ -1,0 +1,41 @@
+{
+  "sorted_middleware": [
+    "/api/watch/[id]/[ep]/route"
+  ],
+  "middleware": {},
+  "instrumentation": null,
+  "functions": {
+    "/api/watch/[id]/[ep]/route": {
+      "files": [
+        "server/middleware-build-manifest.js",
+        "server/interception-route-rewrite-manifest.js",
+        "server/server-reference-manifest.js",
+        "server/app/api/watch/[id]/[ep]/route_client-reference-manifest.js",
+        "server/edge/chunks/_next-internal_server_app_api_watch_[id]_[ep]_route_actions_0666b668.js",
+        "server/edge/chunks/node_modules_next_dist_esm_01ad301a._.js",
+        "server/edge/chunks/node_modules_next_dist_compiled_1fe0aaac._.js",
+        "server/edge/chunks/node_modules_next_dist_7bea040f._.js",
+        "server/edge/chunks/edge-wrapper_14270305.js",
+        "server/edge/chunks/[root-of-the-server]__ed810c38._.js",
+        "server/edge/chunks/turbopack-edge-wrapper_99efc68b.js"
+      ],
+      "name": "app/api/watch/[id]/[ep]/route",
+      "page": "/api/watch/[id]/[ep]/route",
+      "matchers": [
+        {
+          "regexp": "^/api/watch/(?P<nxtPid>[^/]+?)/(?P<nxtPep>[^/]+?)(?:/)?$",
+          "originalSource": "/api/watch/[id]/[ep]"
+        }
+      ],
+      "wasm": [],
+      "assets": [],
+      "env": {
+        "__NEXT_BUILD_ID": "development",
+        "NEXT_SERVER_ACTIONS_ENCRYPTION_KEY": "gAVPcunA/L2sgDjkAe4IZFmpev+l5OBFsN73V/ZkrAc=",
+        "__NEXT_PREVIEW_MODE_ID": "1aaa622e48d230f4a18f290c5530da08",
+        "__NEXT_PREVIEW_MODE_ENCRYPTION_KEY": "71bbe39262ff36636694d84366026f18fba80a6fe165a1fa74a83330716d8e86",
+        "__NEXT_PREVIEW_MODE_SIGNING_KEY": "610a980072b0c1a367b08d2d43c82d0b8c51b39ff97e0321f90e0e104c1b89f2"
+      }
+    }
+  }
+}

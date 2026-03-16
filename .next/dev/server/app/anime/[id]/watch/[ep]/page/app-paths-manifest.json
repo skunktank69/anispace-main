@@ -1,0 +1,3 @@
+{
+  "/anime/[id]/watch/[ep]/page": "app/anime/[id]/watch/[ep]/page.js"
+}
